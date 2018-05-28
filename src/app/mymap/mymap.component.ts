@@ -18,7 +18,10 @@ import proj from 'ol/proj';
 })
 export class MymapComponent implements OnInit {
 
+map: Map
+view: View
 locationSource: VectorSource
+vectorLayerLocation: VectorLayer
 
   constructor() { }
 
@@ -43,11 +46,11 @@ locationSource: VectorSource
 
     this.locationSource = new VectorSource();
 
-    this.vectorLayer_location = new VectorLayer({
+    this.vectorLayerLocation = new VectorLayer({
       source: this.locationSource
     });
 
-    this.map.addLayer(this.vectorLayer_location);
+    this.map.addLayer(this.vectorLayerLocation);
 
     var geolocation = new Geolocation({
       projection: this.view.getProjection()
@@ -59,7 +62,7 @@ locationSource: VectorSource
       var [longitude, latitude] = proj.toLonLat(geolocation.getPosition());
       fetch(`https://api-adresse.data.gouv.fr/reverse/?lon=${longitude}&lat=${latitude}`).then(response => response.json())
         .then(json => {
-          var features = (new GeoJSON()).readFeatures(json, {
+          var features = (new GeoJSON()).readFeatures(json, <any> {
             featureProjection: 'EPSG:3857'
           })
           var coordinates = geolocation.getPosition();
